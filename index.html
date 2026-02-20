@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CPU Scheduling Studio Pro</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=IBM+Plex+Sans:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="bg-orb orb-1"></div>
+    <div class="bg-orb orb-2"></div>
+    <main class="layout">
+      <header class="hero card">
+        <p class="eyebrow">Operating Systems Project</p>
+        <h1>CPU Scheduling Studio Pro</h1>
+        <p>
+          Demonstrate core scheduling concepts with an interactive simulator,
+          live Gantt chart, and algorithm-by-algorithm performance analysis.
+        </p>
+        <div class="hero-chips">
+          <span class="chip">Interactive Algorithms</span>
+          <span class="chip">Live Playback</span>
+          <span class="chip">Presentation Ready</span>
+        </div>
+      </header>
+
+      <section class="card controls">
+        <div class="section-head">
+          <h2>Simulator Controls</h2>
+          <p class="hint">Configure strategy and execution cost, then run.</p>
+        </div>
+        <div class="control-grid">
+          <label>
+            Algorithm
+            <select id="algorithm">
+              <option value="FCFS">FCFS</option>
+              <option value="SJF">SJF (Non-Preemptive)</option>
+              <option value="PRIORITY">Priority (Non-Preemptive)</option>
+              <option value="SRTF">SRTF (Preemptive)</option>
+              <option value="RR">Round Robin</option>
+            </select>
+          </label>
+          <label id="quantum-wrap" class="hidden">
+            Time Quantum
+            <input id="quantum" type="number" min="1" step="1" value="2" />
+          </label>
+          <label>
+            Context Switch Cost
+            <input id="contextSwitch" type="number" min="0" step="1" value="0" />
+          </label>
+          <button id="simulateBtn" class="primary">Run Simulation</button>
+        </div>
+      </section>
+
+      <section class="card process-panel">
+        <div class="section-head">
+          <h2>Processes</h2>
+          <div class="row-actions">
+            <button id="addProcessBtn">Add Process</button>
+            <button id="loadDemoBtn">Load Demo Set</button>
+          </div>
+        </div>
+        <p class="hint">Use arrival, burst, and priority values to compare algorithm behavior.</p>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>PID</th>
+                <th>Arrival Time</th>
+                <th>Burst Time</th>
+                <th>Priority</th>
+                <th>Color</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody id="processBody"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="card results">
+        <div class="section-head">
+          <h2>Gantt Chart</h2>
+          <span id="runBadge" class="badge">Not simulated</span>
+        </div>
+        <p class="hint">Timeline shows CPU allocation order, idle time, and context switch overhead.</p>
+        <div id="ganttTimeline" class="gantt empty">Run a simulation to visualize the timeline.</div>
+        <div class="live-controls">
+          <button id="playAnimBtn" class="primary">Play Live Animation</button>
+          <button id="pauseAnimBtn">Pause</button>
+          <button id="resetAnimBtn">Reset</button>
+          <label>
+            Speed
+            <select id="animSpeed">
+              <option value="1">1x</option>
+              <option value="2">2x</option>
+              <option value="4">4x</option>
+            </select>
+          </label>
+        </div>
+        <div class="live-panel">
+          <div class="live-stats">
+            <span id="liveClock">Time: 0</span>
+            <span id="liveCurrent">CPU: Idle</span>
+            <span id="liveQueue">Ready: -</span>
+          </div>
+          <div id="liveTrack" class="live-track"></div>
+          <div id="remainingGrid" class="remaining-grid"></div>
+        </div>
+      </section>
+
+      <section class="card metrics">
+        <div class="section-head">
+          <h2>Performance Metrics</h2>
+          <p class="hint">Track efficiency and fairness across each run.</p>
+        </div>
+        <div id="summaryCards" class="summary-grid"></div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>PID</th>
+                <th>Completion</th>
+                <th>Turnaround</th>
+                <th>Waiting</th>
+                <th>Response</th>
+              </tr>
+            </thead>
+            <tbody id="metricBody"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="card calculations">
+        <div class="section-head">
+          <h2>Step-by-Step Calculations</h2>
+          <p class="hint">See how every final metric is computed from each clock tick.</p>
+        </div>
+        <div id="formulaGrid" class="formula-grid"></div>
+        <div class="table-wrap trace-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>t</th>
+                <th>CPU Event</th>
+                <th>Ready Queue</th>
+                <th>Waiting Update</th>
+                <th>Remaining Burst</th>
+              </tr>
+            </thead>
+            <tbody id="traceBody"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="card concepts">
+        <h2>Core Concepts Explained</h2>
+        <div class="concept-grid">
+          <article>
+            <h3>Throughput</h3>
+            <p>How many processes complete per unit of time. Higher throughput indicates better overall CPU productivity.</p>
+          </article>
+          <article>
+            <h3>Turnaround Time</h3>
+            <p>Total time from arrival to completion. This is key for measuring end-to-end process experience.</p>
+          </article>
+          <article>
+            <h3>Waiting Time</h3>
+            <p>Time spent in the ready queue before execution. Lower waiting usually means more fair scheduling behavior.</p>
+          </article>
+          <article>
+            <h3>Response Time</h3>
+            <p>Delay between process arrival and first CPU allocation. Critical for interactive and time-sensitive tasks.</p>
+          </article>
+          <article>
+            <h3>Preemptive vs Non-Preemptive</h3>
+            <p>Preemptive algorithms can interrupt running processes; non-preemptive ones run a selected process until completion.</p>
+          </article>
+          <article>
+            <h3>Context Switching</h3>
+            <p>Switching between processes has overhead. Use the context switch cost control to demonstrate this tradeoff.</p>
+          </article>
+        </div>
+      </section>
+    </main>
+
+    <script src="app.js"></script>
+  </body>
+</html>
